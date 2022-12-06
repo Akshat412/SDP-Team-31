@@ -18,6 +18,9 @@ Adafruit_ADXL375 accel = Adafruit_ADXL375(12345);
 //Adafruit_ADXL375 accel = Adafruit_ADXL375(ADXL375_CS, &SPI, 12345);
 
 sensors_event_t event;
+int currentTime   = 0; 
+int numCollisions = 0; 
+int collisionTime = 0; 
 
 void displayDataRate(void)
 {
@@ -108,20 +111,18 @@ void setup(void)
 
 void loop(void)
 {
+  Serial.print(millis()); Serial.print(", "); 
+  
   /* Get a new sensor event */
   accel.getEvent(&event);
-
-  Serial.print(event.acceleration.x/9.81); Serial.print(", ");
-  Serial.print(event.acceleration.y/9.81); Serial.print(", ");
-  Serial.print(event.acceleration.z/9.81); Serial.print(", "); 
-
+  
   double magnitude = sqrt(event.acceleration.x*event.acceleration.x + event.acceleration.y*event.acceleration.y + 
                           event.acceleration.z*event.acceleration.z); 
-  Serial.println(magnitude/9.81); 
 
-  if(magnitude > 75) {
-    // collision 
-    digitalWrite(LED_BUILTIN, HIGH); 
-    while(1) Serial.println(-999); 
+  if(magnitude > 90 && (millis() - collisionTime >= 1000)) {
+    numCollisions++;  
+    collisionTime = millis(); 
   }
+  Serial.print(magnitude/9.81); Serial.print(", ");
+  Serial.println(numCollisions); 
 }

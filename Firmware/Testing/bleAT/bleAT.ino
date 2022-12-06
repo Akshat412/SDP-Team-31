@@ -9,8 +9,8 @@
 //  Pins
 //  BT VCC to Arduino 5V out. 
 //  BT GND to GND
-//  Arduino D8 (SS RX) - BT TX no need voltage divider 
-//  Arduino D9 (SS TX) - BT RX through a voltage divider (5v to 3.3v)
+//  Arduino D2 (SS RX) - BT TX no need voltage divider 
+//  Arduino D3 (SS TX) - BT RX through a voltage divider (5v to 3.3v)
  
 #include <SoftwareSerial.h>
 SoftwareSerial BTserial(2, 3); 
@@ -22,31 +22,38 @@ boolean lastChar = false;
  
 void setup() 
 {
-    Serial.begin(9600);
+    Serial.begin(115200);
     Serial.println(" ");
  
-    BTserial.begin(9600);  
+        BTserial.begin(9600);  
     Serial.println("BTserial started at 9600");
 }
  
 void loop()
 {
     // Read from the Bluetooth module and send to the Arduino Serial Monitor
-    if (BTserial.available()) {
+    if (BTserial.available())
+    {
         c = BTserial.read();
-        Serial.print(c);
-
-        lastChar = true; 
+        Serial.write(c);
     }
  
  
     // Read from the Serial Monitor and send to the Bluetooth module
-    if (Serial.available()) {
+    if (Serial.available())
+    {
         c = Serial.read();
  
         // do not send line end characters to the HM-10
-        if (c!=10 & c!=13 ) {  
+        if (c!=10 & c!=13 ) 
+        {  
              BTserial.write(c);
         }
+ 
+        // Echo the user input to the main window. 
+        // If there is a new line print the ">" character.
+        if (NL) { Serial.print("\r\n>");  NL = false; }
+        Serial.write(c);
+        if (c==10) { NL = true; }
     }
 }
