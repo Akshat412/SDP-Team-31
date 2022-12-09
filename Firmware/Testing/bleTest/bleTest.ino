@@ -55,7 +55,7 @@ void error(const __FlashStringHelper*err) {
 /**************************************************************************/
 void setup(void)
 {  
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println(F("Adafruit Bluefruit AT Command Example"));
   Serial.println(F("-------------------------------------"));
 

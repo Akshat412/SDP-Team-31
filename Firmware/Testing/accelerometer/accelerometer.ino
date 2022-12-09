@@ -19,74 +19,10 @@ Adafruit_ADXL375 accel = Adafruit_ADXL375(12345);
 
 sensors_event_t event;
 int currentTime   = 0; 
-int numCollisions = 0; 
-int collisionTime = 0; 
-
-void displayDataRate(void)
-{
-  Serial.print  ("Data Rate:    ");
-
-  switch(accel.getDataRate())
-  {
-    case ADXL343_DATARATE_3200_HZ:
-      Serial.print  ("3200 ");
-      break;
-    case ADXL343_DATARATE_1600_HZ:
-      Serial.print  ("1600 ");
-      break;
-    case ADXL343_DATARATE_800_HZ:
-      Serial.print  ("800 ");
-      break;
-    case ADXL343_DATARATE_400_HZ:
-      Serial.print  ("400 ");
-      break;
-    case ADXL343_DATARATE_200_HZ:
-      Serial.print  ("200 ");
-      break;
-    case ADXL343_DATARATE_100_HZ:
-      Serial.print  ("100 ");
-      break;
-    case ADXL343_DATARATE_50_HZ:
-      Serial.print  ("50 ");
-      break;
-    case ADXL343_DATARATE_25_HZ:
-      Serial.print  ("25 ");
-      break;
-    case ADXL343_DATARATE_12_5_HZ:
-      Serial.print  ("12.5 ");
-      break;
-    case ADXL343_DATARATE_6_25HZ:
-      Serial.print  ("6.25 ");
-      break;
-    case ADXL343_DATARATE_3_13_HZ:
-      Serial.print  ("3.13 ");
-      break;
-    case ADXL343_DATARATE_1_56_HZ:
-      Serial.print  ("1.56 ");
-      break;
-    case ADXL343_DATARATE_0_78_HZ:
-      Serial.print  ("0.78 ");
-      break;
-    case ADXL343_DATARATE_0_39_HZ:
-      Serial.print  ("0.39 ");
-      break;
-    case ADXL343_DATARATE_0_20_HZ:
-      Serial.print  ("0.20 ");
-      break;
-    case ADXL343_DATARATE_0_10_HZ:
-      Serial.print  ("0.10 ");
-      break;
-    default:
-      Serial.print  ("???? ");
-      break;
-  }
-  Serial.println(" Hz");
-}
 
 void setup(void)
 {
   Serial.begin(115200);
-  while (!Serial);
   Serial.println("ADXL375 Accelerometer Test"); Serial.println("");
 
   /* Initialise the sensor */
@@ -99,7 +35,7 @@ void setup(void)
 
   // Range is fixed at +-200g
   
-  accel.setDataRate(ADXL343_DATARATE_3200_HZ); 
+  accel.setDataRate(ADXL343_DATARATE_1600_HZ); 
 
   /* Display some basic information on this sensor */
   //accel.printSensorDetails();
@@ -110,19 +46,13 @@ void setup(void)
 }
 
 void loop(void)
-{
-  Serial.print(millis()); Serial.print(", "); 
-  
+{  
   /* Get a new sensor event */
   accel.getEvent(&event);
   
   double magnitude = sqrt(event.acceleration.x*event.acceleration.x + event.acceleration.y*event.acceleration.y + 
-                          event.acceleration.z*event.acceleration.z); 
+                          event.acceleration.z*event.acceleration.z) / 9.81; 
 
-  if(magnitude > 90 && (millis() - collisionTime >= 1000)) {
-    numCollisions++;  
-    collisionTime = millis(); 
-  }
-  Serial.print(magnitude/9.81); Serial.print(", ");
-  Serial.println(numCollisions); 
+  if(magnitude > 80) Serial.println(magnitude);
+  if(millis() % 10000 == 0) Serial.println("Running!");  
 }
