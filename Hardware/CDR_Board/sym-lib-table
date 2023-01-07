@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "NiMH_Charger")(type "KiCad")(uri "${KIPRJMOD}/Libraries/NiMH_Charger.kicad_sym")(options "")(descr ""))
+)

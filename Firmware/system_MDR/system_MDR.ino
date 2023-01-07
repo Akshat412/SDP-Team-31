@@ -162,6 +162,8 @@ void loop() {
     }
   }  
 
+  else if(magnitude > 20) Serial.println(magnitude); 
+
   if(millis() % DELAY_TIME == 0) {
     display.clearDisplay();
     bme.performReading(); 

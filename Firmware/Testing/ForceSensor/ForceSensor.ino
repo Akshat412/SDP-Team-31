@@ -22,6 +22,6 @@ void loop(void) {
   Serial.print("Analog reading = ");
   Serial.println(fsrReading);
  
-  if(fsrReading > 100 && fsrReading < 200) digitalWrite(LEDpin, HIGH); 
+  if(fsrReading > 75) digitalWrite(LEDpin, HIGH); 
   else digitalWrite(LEDpin, LOW); 
 }
