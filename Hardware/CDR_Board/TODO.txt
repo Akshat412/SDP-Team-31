@@ -1,0 +1,8 @@
+TODO:
+	- Choose LDO IC 
+		- 200 mA 3.3V, as efficient as possible
+		- Choose passive values accordingly 
+	- Design LiPo charging circuit
+		- Datasheet has calculations
+		- Choose passive values accordingly
+		- Find appropriate LiPo batteries
