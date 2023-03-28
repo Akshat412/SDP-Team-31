@@ -1,6 +1,6 @@
 /*
  * SDP23 Team 31
- * MDR System Software 
+ * CDR System Software 
  * --------------------
  * Samples accelerometer
  * If collision, goes into alert state
@@ -20,8 +20,8 @@
 #include "BluefruitConfig.h"
 
 /* user defines */
-#define BUZZER  9
-#define SQWAVE  8 
+#define BUZZER  10
+#define SQWAVE  11
 
 #define FACTORYRESET_ENABLE 1  // reference in Adafruit test code 
 
@@ -34,6 +34,12 @@ sensors_event_t event;
 
 /* whether sqwave on or off */
 int sqwave_state = 0; 
+
+/* variables for computation */
+double magnitude = 0; 
+float x = 0; 
+float y = 0; 
+float z = 0; 
 
 /* Helper function for debugging BLE Friend */
 void error(const __FlashStringHelper*err) {
@@ -51,8 +57,7 @@ void setup() {
   if(!accel.begin())
   {
     // problem connecting to accelerometer, check connections 
-    Serial.println("ERROR: No ADXL375, check wiring");
-    while(1);
+    while(1) Serial.println("ERROR: No ADXL375, check wiring");
   }
 
   // set sampling rate of accelerometer to 800 Hz, diagnostic from test code 
@@ -61,8 +66,7 @@ void setup() {
   // initialize BLE Friend 
   Serial.print(F("Initialising the Bluefruit LE module: "));
   if ( !ble.begin(VERBOSE_MODE) ) {
-    Serial.println("ERROR: No BLE module, check wiring");
-    while (1); 
+    while(1) Serial.println("ERROR: No BLE module, check wiring"); 
   }
 
   // factory reset to remove old characteristics 
@@ -101,34 +105,26 @@ void loop() {
   // get a new sensor event 
   accel.getEvent(&event);
 
-  float x = event.acceleration.x / 9.81; 
-  float y = event.acceleration.y / 9.81; 
-  float z = event.acceleration.z / 9.81; 
+  x = event.acceleration.x / 9.81; 
+  y = event.acceleration.y / 9.81; 
+  z = event.acceleration.z / 9.81; 
 
   // calculate magnitude of current collision
-  double magnitude = sqrt(x*x + y*y + z*z); 
+  magnitude = sqrt(x*x + y*y + z*z); 
 
+  /*
   double theta_impact = 0; 
   if(event.acceleration.z > 0) theta_impact = atan(x/z) * 180/3.14 + 180;
   else theta_impact = atan(x/z) * 180/3.14; 
 
   double phi = acos(y / magnitude) - 90;
+  */
 
   // check magnitude for collision, 85 Gs
   if(magnitude > 85) {
     // collision, enter alert state
-    Serial.print(x);
-    Serial.print(", ");
-    Serial.print(y);
-    Serial.print(", ");
-    Serial.print(z);
-    Serial.print(", ");
+    Serial.println(magnitude); 
     
-    Serial.print(magnitude); 
-    Serial.print(", ");
-    Serial.print(theta_impact);
-    Serial.print(", ");
-    Serial.println(phi);
     ble.println("AT+GATTCHAR=1,65");
     ble.waitForOK(); 
     
@@ -140,21 +136,8 @@ void loop() {
       delay(250);   
     }
   }
-  
-  else if(magnitude > 20) {
-    Serial.print(x);
-    Serial.print(", ");
-    Serial.print(y);
-    Serial.print(", ");
-    Serial.print(z);
-    Serial.print(", ");
-    
-    Serial.print(magnitude); 
-    Serial.print(", ");
-    Serial.print(theta_impact);
-    Serial.print(", ");
-    Serial.println(phi); 
-  }
+
+  /*
 
   if(sqwave_state == 0) {
     sqwave_state = 1;
@@ -165,4 +148,5 @@ void loop() {
     sqwave_state = 0;
     digitalWrite(SQWAVE, LOW);  
   }
+  */
 }

@@ -56,20 +56,20 @@ void error(const __FlashStringHelper*err) {
 void setup(void)
 {  
   Serial.begin(115200);
+  while (!Serial); // Waiting for Serial Monitor
   Serial.println(F("Adafruit Bluefruit AT Command Example"));
   Serial.println(F("-------------------------------------"));
 
   /* Initialise the module */
-  Serial.print(F("Initialising the Bluefruit LE module: "));
+  Serial.println(F("Initialising the Bluefruit LE module: "));
 
   if ( !ble.begin(VERBOSE_MODE) )
   {
     error(F("Couldn't find Bluefruit, make sure it's in CoMmanD mode & check wiring?"));
   }
-
+  
   if ( FACTORYRESET_ENABLE )
   {
-    /* Perform a factory reset to make sure everything is in a known state */
     Serial.println(F("Performing a factory reset: "));
     if ( ! ble.factoryReset() ){
       error(F("Couldn't factory reset"));

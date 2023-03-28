@@ -29,8 +29,7 @@ void setup(void)
   if(!accel.begin())
   {
     /* There was a problem detecting the ADXL375 ... check your connections */
-    Serial.println("Ooops, no ADXL375 detected ... Check your wiring!");
-    while(1);
+    while(1) Serial.println("Ooops, no ADXL375 detected ... Check your wiring!");
   }
 
   // Range is fixed at +-200g
@@ -53,6 +52,12 @@ void loop(void)
   double magnitude = sqrt(event.acceleration.x*event.acceleration.x + event.acceleration.y*event.acceleration.y + 
                           event.acceleration.z*event.acceleration.z) / 9.81; 
 
-  if(magnitude > 80) Serial.println(magnitude);
-  if(millis() % 10000 == 0) Serial.println("Running!");  
+  Serial.print(event.acceleration.x);
+  Serial.print(", ");  
+
+  Serial.print(event.acceleration.y);
+  Serial.print(", ");  
+
+  Serial.print(event.acceleration.z);
+  Serial.println();  
 }
