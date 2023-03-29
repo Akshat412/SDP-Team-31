@@ -20,6 +20,12 @@ Adafruit_ADXL375 accel = Adafruit_ADXL375(12345);
 sensors_event_t event;
 int currentTime   = 0; 
 
+/* variables for computation */
+double magnitude = 0; 
+float x = 0; 
+float y = 0; 
+float z = 0; 
+
 void setup(void)
 {
   Serial.begin(115200);
@@ -49,9 +55,14 @@ void loop(void)
   /* Get a new sensor event */
   accel.getEvent(&event);
   
-  double magnitude = sqrt(event.acceleration.x*event.acceleration.x + event.acceleration.y*event.acceleration.y + 
-                          event.acceleration.z*event.acceleration.z) / 9.81; 
+  x = event.acceleration.x / 9.81; 
+  y = event.acceleration.y / 9.81; 
+  z = event.acceleration.z / 9.81; 
 
+  // calculate magnitude of current collision
+  magnitude = sqrt(x*x + y*y + z*z);
+
+  /*
   Serial.print(event.acceleration.x);
   Serial.print(", ");  
 
@@ -60,4 +71,7 @@ void loop(void)
 
   Serial.print(event.acceleration.z);
   Serial.println();  
+  */
+
+  Serial.println(magnitude);
 }
