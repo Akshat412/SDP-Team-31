@@ -50,7 +50,7 @@ void error(const __FlashStringHelper*err) {
 void setup() {
   // initialize serial at 115200
   Serial.begin(115200);
-  Serial.println("SDP Team 31: MDR"); 
+  Serial.println("SDP Team 31: CDR"); 
   Serial.println("-----------------");
 
   // initialize the accelerometer
@@ -95,10 +95,7 @@ void setup() {
   ble.waitForOK(); 
 
   // GPIO enables 
-  pinMode(LED_BUILTIN, OUTPUT); 
   pinMode(BUZZER, OUTPUT); 
-  pinMode(SQWAVE, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW); 
 }
 
 void loop() {
@@ -136,17 +133,4 @@ void loop() {
       delay(250);   
     }
   }
-
-  /*
-
-  if(sqwave_state == 0) {
-    sqwave_state = 1;
-    digitalWrite(SQWAVE, HIGH);  
-  }
-
-  else {
-    sqwave_state = 0;
-    digitalWrite(SQWAVE, LOW);  
-  }
-  */
 }
