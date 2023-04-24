@@ -2,26 +2,17 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_ADXL375.h>
 
-#define ADXL375_SCK 13
-#define ADXL375_MISO 12
-#define ADXL375_MOSI 11
-#define ADXL375_CS 10
+#define LED A2
+#define ADXL375_MG2G_MULTIPLIER (0.049) // 49mg per lsb
 
 /* Assign a unique ID to this sensor at the same time */
 /* Uncomment following line for default Wire bus      */
 Adafruit_ADXL375 accel = Adafruit_ADXL375(12345);
 
-/* Uncomment for software SPI */
-//Adafruit_ADXL375 accel = Adafruit_ADXL375(ADXL375_SCK, ADXL375_MISO, ADXL375_MOSI, ADXL375_CS, 12345);
-
-/* Uncomment for hardware SPI */
-//Adafruit_ADXL375 accel = Adafruit_ADXL375(ADXL375_CS, &SPI, 12345);
-
-sensors_event_t event;
-int currentTime   = 0; 
+uint8_t led_state = 0; 
 
 /* variables for computation */
-double magnitude = 0; 
+double mag = 0; 
 float x = 0; 
 float y = 0; 
 float z = 0; 
@@ -29,7 +20,6 @@ float z = 0;
 void setup(void)
 {
   Serial.begin(115200);
-  Serial.println("ADXL375 Accelerometer Test"); Serial.println("");
 
   /* Initialise the sensor */
   if(!accel.begin())
@@ -46,32 +36,51 @@ void setup(void)
   //accel.printSensorDetails();
   //displayDataRate();
 
-  pinMode(LED_BUILTIN, OUTPUT); 
-  digitalWrite(LED_BUILTIN, LOW); 
+  pinMode(LED, OUTPUT); 
 }
 
 void loop(void)
 {  
   /* Get a new sensor event */
+  /*
   accel.getEvent(&event);
   
   x = event.acceleration.x / 9.81; 
   y = event.acceleration.y / 9.81; 
   z = event.acceleration.z / 9.81; 
+  */ 
 
-  // calculate magnitude of current collision
-  magnitude = sqrt(x*x + y*y + z*z);
+  x = (int16_t)accel.getX(); 
+  y = (int16_t)accel.getY(); 
+  z = (int16_t)accel.getZ(); 
+
+  x = x * ADXL375_MG2G_MULTIPLIER; 
+  y = y * ADXL375_MG2G_MULTIPLIER; 
+  z = z * ADXL375_MG2G_MULTIPLIER; 
+
+  // calculate mag of current collision
+  mag = sqrt(x*x + y*y + z*z);
 
   /*
-  Serial.print(event.acceleration.x);
+  Serial.print(x);
   Serial.print(", ");  
 
-  Serial.print(event.acceleration.y);
+  Serial.print(y);
   Serial.print(", ");  
 
-  Serial.print(event.acceleration.z);
+  Serial.print(z);
   Serial.println();  
-  */
+  */ 
 
-  Serial.println(magnitude);
+  // Serial.println(mag);
+
+  if(led_state == 0) {
+    digitalWrite(LED, HIGH); 
+    led_state = 1; 
+  }
+
+  else {
+    digitalWrite(LED, LOW); 
+    led_state = 0; 
+  }
 }

@@ -15,8 +15,8 @@
 
 // variables
 float x, y, z;      
-double magn = 0; 
-int led_state = 0; 
+double mag = 0; 
+uint8_t led_state = 0; 
 
 void setup() {
   Serial.begin(115200); 
@@ -26,14 +26,17 @@ void setup() {
   Wire.begin();
 
   // communicate to set up ADXL375
-  Wire.beginTransmission(ADXL375); 
+  Wire.beginTransmission(ADXL375);
+  Wire.write(0x2C); // write to BW_RATE register  
+  Wire.write(0x0F); // set bits D3:D0 to 1101 for 800 Hz
+  Wire.endTransmission();
 
+  Wire.beginTransmission(ADXL375);
   Wire.write(0x2D); // write to POWER_CTL register 
   Wire.write(0x08); // set bit D3 high for measurement 
+  Wire.endTransmission();
 
-  Wire.write(0x2C); // write to BW_RATE register  
-  Wire.write(0x0D); // set bits D3:D0 to 1101 for 800 Hz
-
+  Wire.beginTransmission(ADXL375);
   Wire.write(0x31); // write to DATA_FORMAT register
   Wire.write(0x0B); // set bits D4:D0 to 01011 for format
   Wire.endTransmission();
@@ -61,7 +64,7 @@ void loop() {
   z = z * ADXL375_MG2G_MULTIPLIER; 
 
   mag = sqrt(x*x + y*y + z*z); 
-  // Serial.println(mag); 
+  Serial.println(mag); 
   
   /*
   Serial.print(x);
