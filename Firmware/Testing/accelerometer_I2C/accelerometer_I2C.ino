@@ -8,15 +8,25 @@
 
 // hardware defines 
 #define ADXL375 0x53
-#define LED A2        
+#define LED 11        
 
 // constant defines
 #define ADXL375_MG2G_MULTIPLIER (0.049) // 49mg per lsb
+
+// collision locations 
+#define FRONT_RIGHT 1
+#define FRONT_LEFT  2
+#define BACK_RIGHT  3
+#define BACK_LEFT   4
 
 // variables
 float x, y, z;      
 double mag = 0; 
 uint8_t led_state = 0; 
+
+// collision location 
+double theta_impact = 0; 
+uint8_t direction = 0; 
 
 void setup() {
   Serial.begin(115200); 
@@ -64,7 +74,27 @@ void loop() {
   z = z * ADXL375_MG2G_MULTIPLIER; 
 
   mag = sqrt(x*x + y*y + z*z); 
-  Serial.println(mag); 
+  if(mag > 40) {
+    // calculate impact location and store in characteristic 
+    if(x > 0) {
+      // only front right or back right 
+      theta_impact = atan(y/x) * 180/3.14;
+
+      if(theta_impact >= 0 && theta_impact <= 90) direction = FRONT_RIGHT; 
+      else direction = BACK_RIGHT;
+    }
+
+    else {
+      // only front left or back left 
+      theta_impact = atan(y/x) * 180/3.14 + 180;
+
+      if(theta_impact >= 90 && theta_impact <= 180) direction = FRONT_LEFT;
+      else direction = BACK_LEFT;  
+    }
+
+    Serial.println(mag);
+    Serial.println(direction);  
+  }
   
   /*
   Serial.print(x);

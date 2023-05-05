@@ -6,13 +6,13 @@ Connect LED from pin 11 through a resistor to ground
  
 For more information see www.ladyada.net/learn/sensors/fsr.html */
  
-int fsrAnalogPin = 0; // FSR is connected to analog 0
-int LEDpin = 9;      // connect Red LED to pin 11 (PWM pin)
-int fsrReading;      // the analog reading from the FSR resistor divider
+int fsrAnalogPin = A3;   // FSR is connected to analog 0
+int LEDpin = 9;         // connect Red LED to pin 11 (PWM pin)
+int fsrReading;         // the analog reading from the FSR resistor divider
 int LEDbrightness;
  
 void setup(void) {
-  Serial.begin(9600);   // We'll send debugging information via the Serial monitor
+  Serial.begin(115200);
   pinMode(LEDpin, OUTPUT);
   digitalWrite(LEDpin, HIGH); 
 }

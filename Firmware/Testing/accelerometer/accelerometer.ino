@@ -60,6 +60,7 @@ void loop(void)
 
   // calculate mag of current collision
   mag = sqrt(x*x + y*y + z*z);
+  if(mag > 75) Serial.println(mag); 
 
   /*
   Serial.print(x);
